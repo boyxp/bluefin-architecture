@@ -8,7 +8,7 @@ class redis implements queueInterface
 	private $_redis = null;
 	private $_key   = null;
 
-	public function __construct(connection $redis=null, $key=null)
+	public function __construct(connection $redis=null, string $key=null)
 	{
 		$this->_redis = $redis;
 		if($key) {
