@@ -9,13 +9,13 @@ class redis implements cacheInterface
 	private $_prefix = null;
 	private $_factor = null;
 
-	public function __construct(connection $redis=null, string $prefix=null)
+	public function __construct(connection $redis, string $prefix=null)
 	{
 		$this->_redis = $redis;
-		if($prefix) {
-			$this->_prefix = "{$prefix}:";
-		} else {
+		if(is_null($prefix)) {
 			$this->_prefix = "CACHE:{$_SERVER['SERVER_NAME']}:";
+		} else {
+			$this->_prefix = "{$prefix}:";
 		}
 	}
 
