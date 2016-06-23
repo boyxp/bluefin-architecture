@@ -1,17 +1,20 @@
 <?php
 declare(strict_types=1);
 namespace bluefin\architecture\queue\adapter;
-use bluefin\orm\connection\adapter\redis as connection;
 use bluefin\architecture\queue\queue as queueInterface;
-class redis implements queueInterface
+class redis extends \injector implements queueInterface
 {
 	private $_redis = null;
 	private $_key   = null;
 
-	public function __construct(connection $redis, string $key)
+	public function __construct(string $key='QUEUE', string $connection='connection_redis')
 	{
-		$this->_redis = $redis;
-		$this->_key   = "QUEUE:{$key}";
+		if(static::$locator->has($connection)===false) {
+			throw new \InvalidArgumentException('error');
+		}
+
+		$this->_redis = static::$locator->$connection;
+		$this->_key   = $key;
 	}
 
 	public function enqueue(string $message):bool

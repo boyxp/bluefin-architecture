@@ -1,17 +1,21 @@
 <?php
 declare(strict_types=1);
 namespace bluefin\architecture\cache\adapter;
-use bluefin\orm\connection\adapter\redis as connection;
 use bluefin\architecture\cache\cache as cacheInterface;
-class redis implements cacheInterface
+class redis extends \injector implements cacheInterface
 {
 	private $_redis  = null;
 	private $_prefix = null;
 	private $_factor = null;
 
-	public function __construct(connection $redis, string $prefix=null)
+	public function __construct(string $prefix=null, string $connection='connection_redis')
 	{
-		$this->_redis = $redis;
+		if(static::$locator->has($connection)===false) {
+			throw new \InvalidArgumentException('error');
+		}
+
+		$this->_redis = static::$locator->$connection;
+
 		if(is_null($prefix)) {
 			$this->_prefix = "CACHE:{$_SERVER['SERVER_NAME']}:";
 		} else {
